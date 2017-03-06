@@ -20,9 +20,21 @@ public class GpioManager implements GpioPinListenerDigital{
 		private static final String LED1 = "LED1", LED2="LED2", LED3="LED3", LED4="LED4";
 		private static final SoundManager sound = new SoundManager();
 		
+		public OlaWeb io=new OlaWeb("localhost");
+		
 		boolean frozen=false;
+		private int[] data = new int[512];
 	    
+		private void dmx(boolean a, boolean b, boolean c){
+			data[20]=a?255:0;
+			data[21]=b?255:0;
+			data[22]=c?255:0;
+			io.send(data);
+		}
+		
 	    public GpioManager(){
+	    	for(int i=0;i<512;i++) data[i]=0;
+	    	
 	    	btn1 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05,BTN1,PinPullResistance.PULL_DOWN);
 	        led1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00,LED1,PinState.LOW);
 	        
@@ -64,6 +76,7 @@ public class GpioManager implements GpioPinListenerDigital{
 	        led4.low();
 	    }
 	    public void shutdown(){
+	    	io.disconnect();
 	    	gpio.shutdown();
 	    }
 	    private synchronized void toggle(GpioPin pin,PinState state){
@@ -75,12 +88,15 @@ public class GpioManager implements GpioPinListenerDigital{
 	    	if(!frozen&&!nm.equals(BTN4)){
 		    	if(nm.equals(BTN1)){
 	    			led1.high();
+	    			dmx(true,false,false);
 	    			System.out.println(">> LED1");
 		    	}else if(nm.equals(BTN2)){
 	    			led2.high();
+	    			dmx(false,true,false);
 	    			System.out.println(">> LED2");
 	    		}else if(nm.equals(BTN3)){
 	    			led3.high();
+	    			dmx(false,false,true);
 	    			System.out.println(">> LED3");
 	    		}
 		    	sound.play(SoundManager.BUZZER);
@@ -92,6 +108,7 @@ public class GpioManager implements GpioPinListenerDigital{
 	    		led1.low();
 	    		led2.low();
 	    		led3.low();
+	    		dmx(false,false,false);
 	    	}
 	    }
 
