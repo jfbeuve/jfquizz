@@ -14,10 +14,10 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 public class GpioManager implements GpioPinListenerDigital{
 	
 		private static final GpioController gpio = GpioFactory.getInstance();
-		private GpioPinDigitalInput btn1, btn2, btn3, btn4;
-		private GpioPinDigitalOutput led1,led2,led3,led4;
-		private static final String BTN1 = "BTN1", BTN2 = "BTN2", BTN3 = "BTN3", BTN4="BTN4";
-		private static final String LED1 = "LED1", LED2="LED2", LED3="LED3", LED4="LED4";
+		private GpioPinDigitalInput btn1, btn2, btn3, btn4, btn5;
+		private GpioPinDigitalOutput led1,led2,led3;
+		private static final String BTN1 = "BTN1", BTN2 = "BTN2", BTN3 = "BTN3", BTN4="BTN4",BTN5="BTN5";
+		private static final String LED1 = "LED1", LED2="LED2", LED3="LED3";
 		private static final SoundManager sound = new SoundManager();
 		
 		public OlaWeb io=new OlaWeb("localhost");
@@ -45,7 +45,7 @@ public class GpioManager implements GpioPinListenerDigital{
 	        led3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03,LED3,PinState.LOW);
 	        
 	        btn4 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_25,BTN4,PinPullResistance.PULL_DOWN);
-	        led4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04,LED4,PinState.LOW);
+	        btn5 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04,BTN5,PinPullResistance.PULL_DOWN);
 	    }
 	    
 	    public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
@@ -72,8 +72,8 @@ public class GpioManager implements GpioPinListenerDigital{
 	        
 	        btn4.addListener(this);
 	        btn4.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
-	        led4.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
-	        led4.low();
+	        btn5.addListener(this);
+	        btn5.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
 	    }
 	    public void shutdown(){
 	    	io.disconnect();
